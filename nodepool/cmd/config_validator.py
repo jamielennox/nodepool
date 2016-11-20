@@ -116,6 +116,9 @@ class ConfigValidator:
             'script-dir': str,
             'elements-dir': str,
             'images-dir': str,
+            'paths': {
+                'disk-image-create': str
+            },
             'dburi': str,
             'zmq-publishers': [str],
             'gearman-servers': [{

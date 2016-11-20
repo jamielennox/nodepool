@@ -111,6 +111,19 @@ Example::
 
   images-dir: /path/to/images/dir
 
+paths
+-----
+This section is optional.
+
+Nodepool relies on external applications such as disk-image-builder. Typically
+these are found by the environment PATH however in certain situations we want
+to configure these to a specific location. This allows configuration to
+override a path to the application.
+
+Example::
+
+  disk-image-create: /path/to/disk-image-create
+
 cron
 ----
 This section is optional.

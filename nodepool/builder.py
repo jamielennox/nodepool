@@ -415,10 +415,8 @@ class NodePoolBuilder(object):
         if 'qcow2' in img_types:
             qemu_img_options = DEFAULT_QEMU_IMAGE_COMPAT_OPTIONS
 
-        if 'fake-' in image.name:
-            dib_cmd = 'nodepool/tests/fake-image-create'
-        else:
-            dib_cmd = 'disk-image-create'
+        dib_cmd = self._config.paths.get('disk-image-create',
+                                         'disk-image-create')
 
         cmd = ('%s -x -t %s --no-tmpfs %s -o %s %s' %
                (dib_cmd, img_types, qemu_img_options, filename, img_elements))

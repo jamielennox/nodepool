@@ -2,6 +2,9 @@ script-dir: .
 elements-dir: .
 images-dir: '{images_dir}'
 
+paths:
+  disk-image-create: 'nodepool/tests/fake-image-create'
+
 cron:
   check: '*/15 * * * *'
   cleanup: '*/1 * * * *'
