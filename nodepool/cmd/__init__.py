@@ -22,6 +22,8 @@ import sys
 import threading
 import traceback
 
+import yaml
+
 
 def stack_dump_handler(signum, frame):
     signal.signal(signal.SIGUSR2, signal.SIG_IGN)
@@ -54,7 +56,14 @@ class NodepoolApp(object):
             if not os.path.exists(fp):
                 raise Exception("Unable to read logging config file at %s" %
                                 fp)
-            logging.config.fileConfig(fp)
+
+            if os.path.splitext(fp)[1] in ('.yml', '.yaml'):
+                with open(fp, 'r') as f:
+                    logging.config.dictConfig(yaml.safe_load(f))
+
+            else:
+                logging.config.fileConfig(fp)
+
         else:
             logging.basicConfig(level=logging.DEBUG,
                                 format='%(asctime)s %(levelname)s %(name)s: '
