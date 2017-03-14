@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# Copyright 2012 Hewlett-Packard Development Company, L.P.
-# Copyright 2013 OpenStack Foundation
-#
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
 # a copy of the License at
@@ -14,23 +10,26 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import logging
 import os
-import sys
 import signal
+import sys
 
 import nodepool.cmd
 import nodepool.nodepool
+import nodepool.webapp
 
-log = logging.getLogger(__name__)
 
+class NodePoolWebApp(nodepool.cmd.NodepoolDaemonApp):
 
-class NodePoolDaemon(nodepool.cmd.NodepoolDaemonApp):
+    app_name = 'webapp'
+    app_description = 'Web reponder for nodepool information'
 
-    app_name = 'nodepool'
+    def __init__(self):
+        super(NodePoolWebApp, self).__init__()
+        self.webapp = None
 
     def create_parser(self):
-        parser = super(NodePoolDaemon, self).create_parser()
+        parser = super(NodePoolWebApp, self).create_parser()
 
         parser.add_argument('-c', dest='config',
                             default='/etc/nodepool/nodepool.yaml',
@@ -38,34 +37,31 @@ class NodePoolDaemon(nodepool.cmd.NodepoolDaemonApp):
         parser.add_argument('-s', dest='secure',
                             default='/etc/nodepool/secure.conf',
                             help='path to secure file')
-        parser.add_argument('--no-deletes', action='store_true')
+
         return parser
 
     def exit_handler(self, signum, frame):
-        self.pool.stop()
+        self.webapp.stop()
         sys.exit(0)
 
     def term_handler(self, signum, frame):
         os._exit(0)
 
     def run(self):
-        self.pool = nodepool.nodepool.NodePool(self.args.secure,
-                                               self.args.config,
-                                               self.args.no_deletes)
-        signal.signal(signal.SIGINT, self.exit_handler)
-        # For back compatibility:
-        signal.signal(signal.SIGUSR1, self.exit_handler)
+        pool = nodepool.nodepool.NodePool(self.args.secure, self.args.config)
+        self.webapp = nodepool.webapp.WebApp(pool)
 
         signal.signal(signal.SIGTERM, self.term_handler)
+        signal.signal(signal.SIGINT, self.exit_handler)
 
-        self.pool.start()
+        self.webapp.start()
 
         while True:
             signal.pause()
 
 
 def main():
-    return NodePoolDaemon.main()
+    return NodePoolWebApp.main()
 
 
 if __name__ == "__main__":
