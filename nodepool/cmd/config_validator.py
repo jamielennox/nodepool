@@ -76,6 +76,7 @@ class ConfigValidator:
             'release': v.Any(str, int),
             'rebuild-age': int,
             'env-vars': {str: str},
+            'username': str,
         }
 
         top_level = {

@@ -288,6 +288,7 @@ class NodeLauncher(threading.Thread, StatsReporter):
 
         self._node.external_id = server.id
         self._node.hostname = hostname
+        self._node.username = cloud_image.username
         self._node.image_id = "{path}/{upload_id}".format(
             path=self._zk._imageUploadPath(cloud_image.image_name,
                                            cloud_image.build_id,

@@ -35,6 +35,7 @@ diskimages:
       - fedora
       - vm
     release: 21
+    username: zuul
     env-vars:
       SHOULD_FAIL: 'true'
       TMPDIR: /opt/dib_tmp

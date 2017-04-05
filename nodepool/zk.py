@@ -196,6 +196,7 @@ class ImageBuild(BaseModel):
         super(ImageBuild, self).__init__(build_id)
         self._formats = []
         self.builder = None          # Builder hostname
+        self.username = None
 
     def __repr__(self):
         d = self.toDict()
@@ -225,6 +226,8 @@ class ImageBuild(BaseModel):
             d['builder'] = self.builder
         if len(self.formats):
             d['formats'] = ','.join(self.formats)
+        if self.username:
+            d['username'] = self.username
         return d
 
     @staticmethod
@@ -240,6 +243,7 @@ class ImageBuild(BaseModel):
         o = ImageBuild(o_id)
         super(ImageBuild, o).fromDict(d)
         o.builder = d.get('builder')
+        o.username = d.get('username')
         # Only attempt the split on non-empty string
         if d.get('formats', ''):
             o.formats = d.get('formats', '').split(',')
@@ -253,11 +257,12 @@ class ImageUpload(BaseModel):
     VALID_STATES = set([UPLOADING, READY, DELETING, FAILED])
 
     def __init__(self, build_id=None, provider_name=None, image_name=None,
-                 upload_id=None):
+                 upload_id=None, username=None):
         super(ImageUpload, self).__init__(upload_id)
         self.build_id = build_id
         self.provider_name = provider_name
         self.image_name = image_name
+        self.username = username
         self.external_id = None      # Provider ID of the image
         self.external_name = None    # Provider name of the image
 
@@ -286,6 +291,8 @@ class ImageUpload(BaseModel):
         d = super(ImageUpload, self).toDict()
         d['external_id'] = self.external_id
         d['external_name'] = self.external_name
+        if self.username:
+            d['username'] = self.username
         return d
 
     @staticmethod
@@ -305,6 +312,7 @@ class ImageUpload(BaseModel):
         super(ImageUpload, o).fromDict(d)
         o.external_id = d.get('external_id')
         o.external_name = d.get('external_name')
+        o.username = d.get('username')
         return o
 
 
@@ -418,6 +426,7 @@ class Node(BaseModel):
         self.external_id = None
         self.hostname = None
         self.comment = None
+        self.username = None
         self.host_keys = []
 
     def __repr__(self):
@@ -445,7 +454,8 @@ class Node(BaseModel):
                     self.created_time == other.created_time and
                     self.external_id == other.external_id and
                     self.hostname == other.hostname and
-                    self.comment == other.comment,
+                    self.comment == other.comment and
+                    self.username == other.username and
                     self.host_keys == other.host_keys)
         else:
             return False
@@ -471,6 +481,8 @@ class Node(BaseModel):
         d['hostname'] = self.hostname
         d['comment'] = self.comment
         d['host_keys'] = self.host_keys
+        if self.username:
+            d['username'] = self.username
         return d
 
     @staticmethod
@@ -500,6 +512,7 @@ class Node(BaseModel):
         o.external_id = d.get('external_id')
         o.hostname = d.get('hostname')
         o.comment = d.get('comment')
+        o.username = d.get('username')
         o.host_keys = d.get('host_keys', [])
         return o
 

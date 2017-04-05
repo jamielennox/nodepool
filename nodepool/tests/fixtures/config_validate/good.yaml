@@ -64,6 +64,7 @@ diskimages:
       - cache-devstack
     release: trusty
     rebuild-age: 3600
+    username: zuul
     env-vars:
       TMPDIR: /opt/dib_tmp
       DIB_IMAGE_CACHE: /opt/dib_cache
