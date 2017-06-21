@@ -1,0 +1,6 @@
+doc/
+devstack/
+nodepool/tests
+.tox/
+.testrepository/
+.git/
